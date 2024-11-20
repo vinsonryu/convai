@@ -64,17 +64,13 @@ def upload_blob(source_file_name, destination_blob_name):
 
     bucket_name = "uploads_123"
     try:
-        # Initialize the Google Cloud Storage client
         storage_client = storage.Client()
 
-        # Get the bucket and blob objects
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(destination_blob_name)
 
-        # Optional: Set a generation-match precondition
         generation_match_precondition = 0
 
-        # Upload the file
         blob.upload_from_filename(
             source_file_name, 
             if_generation_match=generation_match_precondition
@@ -128,14 +124,14 @@ def upload_audio():
     if file:
         filename = "audio" + datetime.now().strftime("%Y%m%d-%I%M%S") + '.wav'
         
-        bucket_name = "uploads_123"  # Replace with your bucket name
+        bucket_name = "uploads_123"  
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(filename)
         
         blob.upload_from_file(file, content_type=file.content_type)
         flash('File uploaded successfully to Cloud Storage')
 
-        gcs_uri = f"gs://{bucket_name}/{filename}"  # Google Cloud Storage URI
+        gcs_uri = f"gs://{bucket_name}/{filename}"  
         result = transcribe_gcs(gcs_uri)
         print(type(result))
     
@@ -153,8 +149,8 @@ def serve_gcs_file(filename):
     try:
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(filename)
-        signed_url = blob.generate_signed_url(version="v4", expiration=3600)  # 1-hour URL validity
-        print(f"Signed URL for {filename}: {signed_url}")  # Debugging log
+        signed_url = blob.generate_signed_url(version="v4", expiration=3600)  
+        print(f"Signed URL for {filename}: {signed_url}")  
         return signed_url
     except Exception as e:
         print(f"Error generating signed URL: {e}")
